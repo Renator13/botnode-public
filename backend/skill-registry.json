@@ -1,0 +1,188 @@
+{
+  "skills": {
+    "google-search": {
+      "id": "google-search",
+      "docker_service": "skill-google-search",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_skills_extracted/google-search-v1",
+      "description": "Perform a search and return structured SERP-like results.",
+      "port": 8100
+    },
+    "key-point-extractor": {
+      "id": "key-point-extractor",
+      "docker_service": "skill-key-point-extractor",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_skills_extracted/key-point-extractor-v1",
+      "description": "Extract main bullet points from text.",
+      "port": 8101
+    },
+    "csv-parser": {
+      "id": "csv-parser",
+      "docker_service": "skill-csv-parser",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_skills_extracted/csv-parser-v1",
+      "description": "Download CSV from URL and parse it into a JSON array.",
+      "port": 8102
+    },
+    "lead-enricher": {
+      "id": "lead-enricher",
+      "docker_service": "skill-lead-enricher",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_skills_extracted/lead-enricher-v1",
+      "description": "Enrich a domain or email with company information.",
+      "port": 8103
+    },
+    "scheduler": {
+      "id": "scheduler",
+      "docker_service": "skill-scheduler",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/scheduler-v1",
+      "description": "No description",
+      "port": 8119
+    },
+    "pdf-reader": {
+      "id": "pdf-reader",
+      "docker_service": "skill-pdf-reader",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_skills_extracted/pdf-reader-v1",
+      "description": "Extract clean text and metadata from a PDF URL.",
+      "port": 8105
+    },
+    "sentiment-analyzer": {
+      "id": "sentiment-analyzer",
+      "docker_service": "skill-sentiment-analyzer",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_skills_extracted/sentiment-analyzer-v1",
+      "description": "Analyze sentiment polarity of a text.",
+      "port": 8106
+    },
+    "notification-router": {
+      "id": "notification-router",
+      "docker_service": "skill-notification-router",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/notification-router-v1",
+      "description": "No description",
+      "port": 8120
+    },
+    "web-scraper": {
+      "id": "web-scraper",
+      "docker_service": "skill-web-scraper",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_skills_extracted/web-scraper-v1",
+      "description": "Extract main text content and metadata from a URL.",
+      "port": 8108
+    },
+    "diff-analyzer": {
+      "id": "diff-analyzer",
+      "docker_service": "skill-diff-analyzer",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_skills_extracted/diff-analyzer-v1",
+      "description": "Compare two text inputs and identify semantic changes.",
+      "port": 8109
+    },
+    "pdf-parser": {
+      "id": "pdf-parser",
+      "docker_service": "skill-pdf-parser",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/pdf-parser-v1",
+      "description": "No description",
+      "port": 8110
+    },
+    "url-fetcher": {
+      "id": "url-fetcher",
+      "docker_service": "skill-url-fetcher",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/url-fetcher-v1",
+      "description": "No description",
+      "port": 8111
+    },
+    "vector-memory": {
+      "id": "vector-memory",
+      "docker_service": "skill-vector-memory",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/vector-memory-v1",
+      "description": "No description",
+      "port": 8112
+    },
+    "hallucination-detector": {
+      "id": "hallucination-detector",
+      "docker_service": "skill-hallucination-detector",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/hallucination-detector-v1",
+      "description": "No description",
+      "port": 8113
+    },
+    "schema-generator": {
+      "id": "schema-generator",
+      "docker_service": "skill-schema-generator",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/schema-generator-v1",
+      "description": "No description",
+      "port": 8114
+    },
+    "quality-gate": {
+      "id": "quality-gate",
+      "docker_service": "skill-quality-gate",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/quality-gate-v1",
+      "description": "No description",
+      "port": 8115
+    },
+    "report-compiler": {
+      "id": "report-compiler",
+      "docker_service": "skill-report-compiler",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/report-compiler-v1",
+      "description": "No description",
+      "port": 8116
+    },
+    "logic-visualizer": {
+      "id": "logic-visualizer",
+      "docker_service": "skill-logic-visualizer",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/logic-visualizer-v1",
+      "description": "No description",
+      "port": 8117
+    },
+    "report-builder": {
+      "id": "report-builder",
+      "docker_service": "skill-report-builder",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/report-builder-v1",
+      "description": "No description",
+      "port": 8118
+    },
+    "text-to-voice": {
+      "id": "text-to-voice",
+      "docker_service": "skill-text-to-voice",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/text-to-voice-v1",
+      "description": "No description",
+      "port": 8121
+    },
+    "web-research": {
+      "id": "web-research",
+      "docker_service": "skill-web-research",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/web-research-v1",
+      "description": "No description",
+      "port": 8122
+    },
+    "prompt-optimizer": {
+      "id": "prompt-optimizer",
+      "docker_service": "skill-prompt-optimizer",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/prompt-optimizer-v1",
+      "description": "No description",
+      "port": 8123
+    },
+    "image-describer": {
+      "id": "image-describer",
+      "docker_service": "skill-image-describer",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional/image-describer-v1",
+      "description": "No description",
+      "port": 8124
+    },
+    "execution-verifier": {
+      "id": "execution-verifier",
+      "docker_service": "skill-execution-verifier",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional2/execution-verifier-v1",
+      "description": "No description",
+      "port": 8125
+    },
+    "bot-auditor": {
+      "id": "bot-auditor",
+      "docker_service": "skill-bot-auditor",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional2/bot-auditor-v1",
+      "description": "No description",
+      "port": 8126
+    },
+    "deep-research-summary": {
+      "id": "deep-research-summary",
+      "docker_service": "skill-deep-research-summary",
+      "path": "/home/ubuntu/.openclaw/workspace/botnode_additional2/deep-research-summary-v1",
+      "description": "No description",
+      "port": 8127
+    }
+  },
+  "total_count": 28,
+  "generated_at": "2026-02-22T15:50:00Z"
+}

@@ -1,0 +1,11 @@
+{
+  "issues": [
+    {
+      "type": "security",
+      "severity": "high",
+      "line": 2,
+      "message": "Potential code injection surface via dynamic execution."
+    }
+  ],
+  "summary": "Found 1 issue(s), including 1 high-severity finding(s)."
+}

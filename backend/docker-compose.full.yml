@@ -1,0 +1,369 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: botnode
+      POSTGRES_USER: botnode
+      POSTGRES_PASSWORD: botnode_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+
+  backend:
+    build:
+      context: ../botnode_mvp
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://botnode:botnode_password@postgres:5432/botnode
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+
+  skill-google-search:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_skills_extracted/google-search-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: google-search_v1
+    ports:
+      - "8100:8000"
+    depends_on:
+      - backend
+
+  skill-key-point-extractor:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_skills_extracted/key-point-extractor-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: key-point-extractor_v1
+    ports:
+      - "8101:8000"
+    depends_on:
+      - backend
+
+  skill-csv-parser:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_skills_extracted/csv-parser-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: csv-parser_v1
+    ports:
+      - "8102:8000"
+    depends_on:
+      - backend
+
+  skill-lead-enricher:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_skills_extracted/lead-enricher-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: lead-enricher_v1
+    ports:
+      - "8103:8000"
+    depends_on:
+      - backend
+
+  skill-scheduler:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_skills_extracted/scheduler-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: scheduler_v1
+    ports:
+      - "8104:8000"
+    depends_on:
+      - backend
+
+  skill-pdf-reader:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_skills_extracted/pdf-reader-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: pdf-reader_v1
+    ports:
+      - "8105:8000"
+    depends_on:
+      - backend
+
+  skill-sentiment-analyzer:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_skills_extracted/sentiment-analyzer-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: sentiment-analyzer_v1
+    ports:
+      - "8106:8000"
+    depends_on:
+      - backend
+
+  skill-notification-router:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_skills_extracted/notification-router-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: notification-router_v1
+    ports:
+      - "8107:8000"
+    depends_on:
+      - backend
+
+  skill-web-scraper:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_skills_extracted/web-scraper-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: web-scraper_v1
+    ports:
+      - "8108:8000"
+    depends_on:
+      - backend
+
+  skill-diff-analyzer:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_skills_extracted/diff-analyzer-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: diff-analyzer_v1
+    ports:
+      - "8109:8000"
+    depends_on:
+      - backend
+
+  skill-pdf-parser:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/pdf-parser-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: pdf-parser_v1
+    ports:
+      - "8110:8000"
+    depends_on:
+      - backend
+
+  skill-url-fetcher:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/url-fetcher-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: url-fetcher_v1
+    ports:
+      - "8111:8000"
+    depends_on:
+      - backend
+
+  skill-vector-memory:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/vector-memory-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: vector-memory_v1
+    ports:
+      - "8112:8000"
+    depends_on:
+      - backend
+
+  skill-hallucination-detector:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/hallucination-detector-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: hallucination-detector_v1
+    ports:
+      - "8113:8000"
+    depends_on:
+      - backend
+
+  skill-schema-generator:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/schema-generator-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: schema-generator_v1
+    ports:
+      - "8114:8000"
+    depends_on:
+      - backend
+
+  skill-quality-gate:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/quality-gate-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: quality-gate_v1
+    ports:
+      - "8115:8000"
+    depends_on:
+      - backend
+
+  skill-report-compiler:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/report-compiler-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: report-compiler_v1
+    ports:
+      - "8116:8000"
+    depends_on:
+      - backend
+
+  skill-logic-visualizer:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/logic-visualizer-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: logic-visualizer_v1
+    ports:
+      - "8117:8000"
+    depends_on:
+      - backend
+
+  skill-report-builder:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/report-builder-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: report-builder_v1
+    ports:
+      - "8118:8000"
+    depends_on:
+      - backend
+
+  skill-scheduler:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/scheduler-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: scheduler_v1
+    ports:
+      - "8119:8000"
+    depends_on:
+      - backend
+
+  skill-notification-router:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/notification-router-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: notification-router_v1
+    ports:
+      - "8120:8000"
+    depends_on:
+      - backend
+
+  skill-text-to-voice:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/text-to-voice-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: text-to-voice_v1
+    ports:
+      - "8121:8000"
+    depends_on:
+      - backend
+
+  skill-web-research:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/web-research-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: web-research_v1
+    ports:
+      - "8122:8000"
+    depends_on:
+      - backend
+
+  skill-prompt-optimizer:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/prompt-optimizer-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: prompt-optimizer_v1
+    ports:
+      - "8123:8000"
+    depends_on:
+      - backend
+
+  skill-image-describer:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional/image-describer-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: image-describer_v1
+    ports:
+      - "8124:8000"
+    depends_on:
+      - backend
+
+  skill-execution-verifier:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional2/execution-verifier-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: execution-verifier_v1
+    ports:
+      - "8125:8000"
+    depends_on:
+      - backend
+
+  skill-bot-auditor:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional2/bot-auditor-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: bot-auditor_v1
+    ports:
+      - "8126:8000"
+    depends_on:
+      - backend
+
+  skill-deep-research-summary:
+    build:
+      context: /home/ubuntu/.openclaw/workspace/botnode_additional2/deep-research-summary-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: deep-research-summary_v1
+    ports:
+      - "8127:8000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:

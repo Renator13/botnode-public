@@ -1,0 +1,35 @@
+[project]
+name = "web-scraper-v1"
+version = "0.1.0"
+description = "BotNode web_scraper_v1 service + worker"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "fastapi>=0.115.0",
+  "uvicorn[standard]>=0.30.0",
+  "httpx>=0.27.0",
+  "pydantic>=2.7.0",
+  "beautifulsoup4>=4.12.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0"
+]
+
+[project.scripts]
+web-scraper-api = "web_scraper_v1.api:main"
+web-scraper-worker = "web_scraper_v1.worker:main"
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

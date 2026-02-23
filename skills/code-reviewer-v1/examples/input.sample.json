@@ -1,0 +1,5 @@
+{
+  "language": "python",
+  "code": "def run(user_code):\n    return eval(user_code)\n",
+  "context": "Executes user-provided logic for automation."
+}

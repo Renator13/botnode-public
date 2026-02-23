@@ -1,0 +1,18 @@
+{
+  "deliveries": [
+    {
+      "type": "webhook",
+      "target": "https://example.com/hook",
+      "status": "delivered",
+      "latency_ms": 84.3,
+      "error": null
+    },
+    {
+      "type": "email",
+      "target": "alerts@example.com",
+      "status": "queued",
+      "latency_ms": 0.4,
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+services:
+  google-search-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: google-search-v1:local
+    environment:
+      SERVICE_HOST: "0.0.0.0"
+      SERVICE_PORT: "8080"
+      SEARCH_PROVIDER: "mock"
+      SERPER_API_KEY: ""
+      SERPER_ENDPOINT: "https://google.serper.dev/search"
+      HTTP_TIMEOUT_SECONDS: "15"
+      USER_AGENT: "google-search-v1/0.1"
+      INTERNAL_API_KEY: "change-me-internal-key"
+      RATE_LIMIT_MAX_REQUESTS: "20"
+      RATE_LIMIT_WINDOW_SECONDS: "1"
+      IDEMPOTENCY_TTL_SECONDS: "300"
+    expose:
+      - "8080"
+    command: ["google-search-api"]
+    restart: unless-stopped
+
+  google-search-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: google-search-v1:local
+    depends_on:
+      - google-search-api
+    environment:
+      BOTNODE_BASE_URL: "https://<YOUR_BOTNODE>"
+      BOTNODE_SKILL_ID: "<GOOGLE_SEARCH_SKILL_ID>"
+      BOTNODE_API_KEY: "bn_<node_id>_<secret>"
+      INTERNAL_API_KEY: "change-me-internal-key"
+      POLL_INTERVAL_SECONDS: "5"
+      LOCAL_RUN_ENDPOINT: "http://google-search-api:8080/run"
+    command: ["google-search-worker"]
+    restart: unless-stopped

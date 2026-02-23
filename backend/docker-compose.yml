@@ -1,0 +1,260 @@
+version: '3.8'
+
+services:
+  # --- INFRAESTRUCTURA BASE ---
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: botnode
+      POSTGRES_USER: botnode
+      POSTGRES_PASSWORD: botnode_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U botnode"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --- BACKEND PRINCIPAL ---
+  backend:
+    build:
+      context: ../botnode_mvp
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://botnode:botnode_password@postgres:5432/botnode
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET_KEY: botnode_jwt_secret_key_change_in_production
+      JWT_ALGORITHM: RS256
+      JWT_PRIVATE_KEY_PATH: /app/botnode_jwt_private.pem
+      JWT_PUBLIC_KEY_PATH: /app/botnode_jwt_public.pem
+    volumes:
+      - ../botnode_mvp:/app
+      - ./backend_logs:/app/logs
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # --- FRONTEND WEB ---
+  frontend:
+    build:
+      context: ../web/botnode/botnode-site
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../web/botnode/botnode-site:/app
+    depends_on:
+      - backend
+
+  # --- MCP BRIDGE ---
+  mcp-bridge:
+    build:
+      context: ../botnode-mcp-bridge
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      BOTNODE_API_KEY: mcp_bridge_key_change_in_production
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
+
+  # --- REVERSE PROXY ---
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - backend
+      - frontend
+    restart: unless-stopped
+
+  # --- MONITORING ---
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+
+  # --- SKILLS CORE (PRIMEROS 10) ---
+  skill-csv-parser:
+    build:
+      context: ../workspace/botnode_skills_extracted/csv-parser-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: csv_parser_v1
+    ports:
+      - "8001:8000"
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+
+  skill-pdf-reader:
+    build:
+      context: ../workspace/botnode_skills_extracted/pdf-reader-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: pdf_reader_v1
+    ports:
+      - "8002:8000"
+    depends_on:
+      - backend
+
+  skill-google-search:
+    build:
+      context: ../workspace/botnode_skills_extracted/google-search-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: google_search_v1
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-changeme}
+    ports:
+      - "8003:8000"
+    depends_on:
+      - backend
+
+  skill-web-scraper:
+    build:
+      context: ../workspace/botnode_skills_extracted/web-scraper-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: web_scraper_v1
+    ports:
+      - "8004:8000"
+    depends_on:
+      - backend
+
+  skill-sentiment-analyzer:
+    build:
+      context: ../workspace/botnode_skills_extracted/sentiment-analyzer-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: sentiment_analyzer_v1
+    ports:
+      - "8005:8000"
+    depends_on:
+      - backend
+
+  skill-hallucination-detector:
+    build:
+      context: ../workspace/botnode_additional/hallucination-detector-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: hallucination_detector_v1
+    ports:
+      - "8006:8000"
+    depends_on:
+      - backend
+
+  skill-code-reviewer:
+    build:
+      context: ../workspace/botnode_additional2/code-reviewer-v1
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: code_reviewer_v1
+    ports:
+      - "8007:8000"
+    depends_on:
+      - backend
+
+  skill-image-processor:
+    build:
+      context: ../workspace/image_processor
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: image_processor
+    ports:
+      - "8008:8000"
+    depends_on:
+      - backend
+
+  skill-data-validator:
+    build:
+      context: ../workspace/data_validator
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: data_validator
+    ports:
+      - "8009:8000"
+    depends_on:
+      - backend
+
+  skill-api-tester:
+    build:
+      context: ../workspace/api_tester
+      dockerfile: Dockerfile
+    environment:
+      BOTNODE_API_URL: http://backend:8000
+      SKILL_ID: api_tester
+    ports:
+      - "8010:8000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+  backend_logs:

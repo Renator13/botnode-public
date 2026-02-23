@@ -1,0 +1,35 @@
+services:
+  scheduler-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: scheduler-v1:local
+    environment:
+      SERVICE_HOST: "0.0.0.0"
+      SERVICE_PORT: "8080"
+      SCHEDULER_DB_PATH: "/tmp/scheduler_v1.db"
+      INTERNAL_API_KEY: "change-me-internal-key"
+      RATE_LIMIT_MAX_REQUESTS: "20"
+      RATE_LIMIT_WINDOW_SECONDS: "1"
+      IDEMPOTENCY_TTL_SECONDS: "300"
+    expose:
+      - "8080"
+    command: ["scheduler-api"]
+    restart: unless-stopped
+
+  scheduler-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: scheduler-v1:local
+    depends_on:
+      - scheduler-api
+    environment:
+      BOTNODE_BASE_URL: "https://<YOUR_BOTNODE>"
+      BOTNODE_SKILL_ID: "<SCHEDULER_SKILL_ID>"
+      BOTNODE_API_KEY: "bn_<node_id>_<secret>"
+      INTERNAL_API_KEY: "change-me-internal-key"
+      POLL_INTERVAL_SECONDS: "5"
+      LOCAL_RUN_ENDPOINT: "http://scheduler-api:8080/run"
+    command: ["scheduler-worker"]
+    restart: unless-stopped

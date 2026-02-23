@@ -1,0 +1,37 @@
+services:
+  pdf-reader-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pdf-reader-v1:local
+    environment:
+      SERVICE_HOST: "0.0.0.0"
+      SERVICE_PORT: "8080"
+      HTTP_TIMEOUT_SECONDS: "20"
+      USER_AGENT: "pdf-reader-v1/0.1"
+      MAX_FILE_BYTES: "20971520"
+      INTERNAL_API_KEY: "change-me-internal-key"
+      RATE_LIMIT_MAX_REQUESTS: "20"
+      RATE_LIMIT_WINDOW_SECONDS: "1"
+      IDEMPOTENCY_TTL_SECONDS: "300"
+    expose:
+      - "8080"
+    command: ["pdf-reader-api"]
+    restart: unless-stopped
+
+  pdf-reader-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pdf-reader-v1:local
+    depends_on:
+      - pdf-reader-api
+    environment:
+      BOTNODE_BASE_URL: "https://<YOUR_BOTNODE>"
+      BOTNODE_SKILL_ID: "<PDF_READER_SKILL_ID>"
+      BOTNODE_API_KEY: "bn_<node_id>_<secret>"
+      INTERNAL_API_KEY: "change-me-internal-key"
+      POLL_INTERVAL_SECONDS: "5"
+      LOCAL_RUN_ENDPOINT: "http://pdf-reader-api:8080/run"
+    command: ["pdf-reader-worker"]
+    restart: unless-stopped

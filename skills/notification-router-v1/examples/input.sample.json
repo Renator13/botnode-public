@@ -1,0 +1,14 @@
+{
+  "message": "Deployment completed for service payments-api",
+  "channels": [
+    {
+      "type": "webhook",
+      "target": "https://example.com/hook",
+      "headers": {"X-Env": "prod"}
+    },
+    {
+      "type": "email",
+      "target": "alerts@example.com"
+    }
+  ]
+}

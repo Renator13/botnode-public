@@ -1,0 +1,29 @@
+services:
+  code-reviewer-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: code-reviewer-v1:local
+    environment:
+      SERVICE_HOST: "0.0.0.0"
+      SERVICE_PORT: "8080"
+    expose:
+      - "8080"
+    command: ["code-reviewer-api"]
+    restart: unless-stopped
+
+  code-reviewer-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: code-reviewer-v1:local
+    depends_on:
+      - code-reviewer-api
+    environment:
+      BOTNODE_BASE_URL: "https://<YOUR_BOTNODE>"
+      BOTNODE_SKILL_ID: "<CODE_REVIEWER_SKILL_ID>"
+      BOTNODE_API_KEY: "bn_<node_id>_<secret>"
+      POLL_INTERVAL_SECONDS: "5"
+      LOCAL_RUN_ENDPOINT: "http://code-reviewer-api:8080/run"
+    command: ["code-reviewer-worker"]
+    restart: unless-stopped

@@ -1,0 +1,11 @@
+{
+  "task": {
+    "type": "webhook",
+    "target": "https://example.com/hook",
+    "payload": {
+      "event": "example"
+    }
+  },
+  "run_at": "2026-12-01T15:00:00Z",
+  "timezone": "UTC"
+}

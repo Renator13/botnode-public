@@ -1,0 +1,11 @@
+# Default owner
+*       @Renator13
+
+# GitHub workflows
+.github/workflows/   @Renator13
+
+# Backend code
+backend/             @Renator13
+
+# Documentation
+docs/                @Renator13
